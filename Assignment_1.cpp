@@ -2,32 +2,44 @@
 using namespace std;
 class graph{
 	public:
-		int V ;
-		vector<vector<int>> v;
-		graph(int a){
-			V = a;
+		int V, E ;   // number of vertices and edges in graph
+		vector<vector<int>> adj;   // adjacency list representation of graph
+		graph(int v, int e){
+			V = v;
+            E = e;
 			for(int i=0; i<V; i++){
-				vector<int> b;
-				v.push_back(b);
+				vector<int> b;            // adding initial V vertices to graph
+				adj.push_back(b);
 			}
+			cout<<" Enter E edges:"<<endl;
+            for(int i=0; i<E; i++){
+                int x, y;
+                cin>>x>>y;                // adding initial E edges to graph
+                adj[x].push_back(y);
+		        adj[y].push_back(x);
+
+            }
 		}
 		
-		void addEdge(int a, int b){
-		    v[b].push_back(a);
-		    v[a].push_back(b);
+		void addEdge(int x, int y){
+		    adj[x].push_back(y);              // addinng an extra edge to graph
+		    adj[y].push_back(x);
+            E++;                        // incrementing count of edges
 		}
 		
 		void addVertex(){
 		    vector<int> vertex;
-		    v.push_back(vertex);
+		    adj.push_back(vertex);             // adding an extra edge to graph
+            V++;                    // incrementing count of vertices
 		}
 };
+
 
 // 11111111111111111111111
 void DFStime1(graph const &graph, int s, vector<bool> &discovered,vector<pair<int,int>> & tInOut, int &time){
     tInOut[s].first = ++time;
     discovered[s] = true;
-    for (int i: graph.v[s]){
+    for (int i: graph.adj[s]){
         if (!discovered[i]){
             DFStime1(graph, i, discovered, tInOut, time);
         }
@@ -38,7 +50,7 @@ void DFStime1(graph const &graph, int s, vector<bool> &discovered,vector<pair<in
 }
 
 void DFStime(graph const &graph, int s, vector<bool> &discovered,vector<pair<int,int>> & tInOut, int &time){
-    for(int j=0; j<graph.v.size(); j++){
+    for(int j=0; j<graph.V; j++){
         if(!discovered[j]){ 
             int k=-1;
             DFStime1(graph, j, discovered, tInOut, k);}
@@ -46,7 +58,7 @@ void DFStime(graph const &graph, int s, vector<bool> &discovered,vector<pair<int
 }
 
 string typeTree(graph const &graph, int u, int v){
-    int n = graph.v.size();
+    int n = graph.V;
     vector<bool> discovered (n, false);
     vector<pair<int,int>> tInOut(n);
     int time = -1;
@@ -58,7 +70,7 @@ string typeTree(graph const &graph, int u, int v){
 
 // 2222222222222222222222222222
 void BFS(graph &ab, int s, vector<int> &dist){
-	vector<bool> visited(ab.v.size(), false); 
+	vector<bool> visited(ab.V, false); 
 	queue<int>  q;
 	dist[s] = 0;
 	
@@ -69,7 +81,7 @@ void BFS(graph &ab, int s, vector<int> &dist){
 		int u = q.front(); 
 		q.pop();
 		 
-		for(int v: ab.v[u]){
+		for(int v: ab.adj[u]){
 		    if(visited[v]==false){
 		        dist[v]=dist[u]+1;
 		        visited[v]=true;
@@ -89,7 +101,7 @@ void connectedId1(graph &ab, int s, vector<int> &dist, int &id, vector<bool> &vi
 		int u = q.front(); 
 		q.pop();
 		 
-		for(int v: ab.v[u]){
+		for(int v: ab.adj[u]){
 		    if(visited[v]==false){
 		        dist[v]=id;
 		        visited[v]=true;
@@ -101,8 +113,8 @@ void connectedId1(graph &ab, int s, vector<int> &dist, int &id, vector<bool> &vi
 }
 
 void connectedId(graph &ab, vector<int> &dist, int id){
-	vector<bool> visited(ab.v.size(), false); 
-	for(int i=0; i<ab.v.size(); i++){
+	vector<bool> visited(ab.V, false); 
+	for(int i=0; i<ab.V; i++){
 	    if(visited[i]==false)
 	    connectedId1(ab, i, dist, id, visited);
 	}
@@ -111,7 +123,7 @@ void connectedId(graph &ab, vector<int> &dist, int id){
 // 444444444444444444444444444444444
 bool DFSRec(graph &ab, int s, vector<bool> &visited, int parent){ 	
     visited[s]=true;    
-    for(int u:ab.v[s]){
+    for(int u:ab.adj[s]){
         if(visited[u]==false){
             if(DFSRec(ab, u,visited,s)==true)
                 {return true;}}
@@ -122,9 +134,9 @@ bool DFSRec(graph &ab, int s, vector<bool> &visited, int parent){
 	}
 
 bool DFS(graph &ab){
-    vector<bool> visited(ab.v.size(), false);
+    vector<bool> visited(ab.V, false);
 		
-    for(int i=0;i<ab.v.size();i++){
+    for(int i=0;i<ab.V;i++){
         if(visited[i]==false)
             if(DFSRec(ab, i,visited,-1)==true)
                 return true;
@@ -139,7 +151,7 @@ int DFS5(graph const &gh, int s, vector<bool> visited, vector<int> &arrival,int 
     int t = arrival[s];     // initialize `t` with the arrival time of vertex `s`
  
     
-    for (int w: gh.v[s]){       // (s, w) forms an edge
+    for (int w: gh.adj[s]){       // (s, w) forms an edge
         if (!visited[w]){       // if `w` is not visited
             t = min(t, DFS5(gh, w, visited, arrival, s, time, bridges));
         }
@@ -185,9 +197,9 @@ void printEdges(map<int, int> const &edges){
 // 5555
 
 int main(){
-	int n=10;
-// 	cin>>n;
-	graph gh(n);
+	int n=10, e =0;
+// 	cin>>n>>e;
+	graph gh(n, e);
 // 	gh.addEdge(0,1); 
 	gh.addEdge(1,2); 
 	gh.addEdge(2,3); 
@@ -203,10 +215,10 @@ gh.addEdge(4,3);
 	
 // 	bool cycle = DFS(gh);
 	
-// 	vector<int> v(gh.v.size(), -1);
+// 	vector<int> v(gh.V, -1);
 // 	BFS(gh, 0, v);
 	
-// 	vector<int> id(gh.v.size(), -1);
+// 	vector<int> id(gh.V, -1);
 // 	connectedId(gh, id, 1);
 // vector<bool> discovered (n, false);
 // vector<pair<int,int>> tInOut(n);
@@ -218,7 +230,7 @@ gh.addEdge(4,3);
 
 
 // 55555555
-auto bridges = findBridges(gh, gh.v.size());
+auto bridges = findBridges(gh, gh.V);
 printEdges(bridges);
 // 5555555
 
