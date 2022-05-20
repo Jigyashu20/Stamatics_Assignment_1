@@ -32,6 +32,9 @@ class graph{
 		    adj.push_back(vertex);             // adding an extra edge to graph
             V++;                    // incrementing count of vertices
 		}
+		
+		vector<int> distanceBFS(int s);
+		vector<int> idVector(int s);
 };
 
 
@@ -69,56 +72,61 @@ string typeTree(graph const &graph, int u, int v){
 }
 
 // 2222222222222222222222222222
-void BFS(graph &ab, int s, vector<int> &dist){
-	vector<bool> visited(ab.V, false); 
+vector<int> graph :: distanceBFS(int s){
+	vector<bool> visited(V, false);         // initialising visited vector
+	vector <int> dist(V, -1);     // initialising distance vector
 	queue<int>  q;
-	dist[s] = 0;
+	dist[s] = 0;        // make source vertex at distance 0
 	
-	visited[s] = true; 
-	q.push(s); 
+	visited[s] = true;      //marking source as visited
+	q.push(s);      //push source vertex to queue
 
 	while(q.empty()==false){ 
-		int u = q.front(); 
+		int u = q.front();          // traversing the queue
 		q.pop();
 		 
-		for(int v: ab.adj[u]){
+		for(int v: adj[u]){
 		    if(visited[v]==false){
-		        dist[v]=dist[u]+1;
+		        dist[v]=dist[u]+1;   // v is child of u and hence at distance of v is 1 mor ethan u
 		        visited[v]=true;
 		        q.push(v);
 		    }
 		} 
 	} 
+	return dist;           // returning distance vector
 } 
+// 2222222222222222222222222222
 
 // 3333333333333333333333333333333333333
-void connectedId1(graph &ab, int s, vector<int> &dist, int &id, vector<bool> &visited){
+vector<int> graph :: idVector( int s){
+    static vector<int> idVec(V, -1);        //initialising output static id vector
+    static vector<bool> visited(V, false);
+    static int id = 1;
     queue<int>  q;
-	dist[s] = id;
+	idVec[s] = id;
 	visited[s] = true; 
 	q.push(s); 
 	while(q.empty()==false){ 
 		int u = q.front(); 
 		q.pop();
 		 
-		for(int v: ab.adj[u]){
+		for(int v: adj[u]){
 		    if(visited[v]==false){
-		        dist[v]=id;
+		        idVec[v]=id;        //All connected vertices get same id
 		        visited[v]=true;
 		        q.push(v);
 		    }
 		} 
 	} 
+	
 	id++;
-}
-
-void connectedId(graph &ab, vector<int> &dist, int id){
-	vector<bool> visited(ab.V, false); 
-	for(int i=0; i<ab.V; i++){
+	for(int i=0; i<V; i++){
 	    if(visited[i]==false)
-	    connectedId1(ab, i, dist, id, visited);
+	        idVector(i);
 	}
-} 
+	return idVec;
+}
+// 3333333333333333333333333333333333333
 
 // 444444444444444444444444444444444
 bool DFSRec(graph &ab, int s, vector<bool> &visited, int parent){ 	
@@ -201,25 +209,35 @@ int main(){
 // 	cin>>n>>e;
 	graph gh(n, e);
 // 	gh.addEdge(0,1); 
-	gh.addEdge(1,2); 
-	gh.addEdge(2,3); 
-	gh.addEdge(0,2); 
+	gh.addEdge(0,1); 
+	gh.addEdge(0,6); 
+	gh.addEdge(0,3); 
 // 	gh.addEdge(1,3);
 // gh.addEdge(0,2);
 // gh.addEdge(8,0);
-// gh.addEdge(8,4);
-// gh.addEdge(1,5);
-gh.addEdge(5,3);
+gh.addEdge(7,8);
+gh.addEdge(8,9);
+gh.addEdge(5,2);
 gh.addEdge(2,4);
-gh.addEdge(4,3);
+gh.addEdge(4,5);
 	
 // 	bool cycle = DFS(gh);
+
+// 	2222222222222222222222222222
+// 	vector<int> v = gh.distanceBFS( 0);
+// 	for(int i=0; i<gh.V; i++){
+// 	    cout<<v[i]<<" ";
+// 	}
+// 	2222222222222222222222222222
+    
+// 3333333333333333333333333333333333333
+// 	vector<int> id = gh.idVector(0);
+// 	for(int i=0; i<gh.V; i++){
+// 	    cout<<id[i]<<endl;
+// 	}
+// 3333333333333333333333333333333333333
 	
-// 	vector<int> v(gh.V, -1);
-// 	BFS(gh, 0, v);
 	
-// 	vector<int> id(gh.V, -1);
-// 	connectedId(gh, id, 1);
 // vector<bool> discovered (n, false);
 // vector<pair<int,int>> tInOut(n);
 // int time = -1;
@@ -230,8 +248,8 @@ gh.addEdge(4,3);
 
 
 // 55555555
-auto bridges = findBridges(gh, gh.V);
-printEdges(bridges);
+// auto bridges = findBridges(gh, gh.V);
+// printEdges(bridges);
 // 5555555
 
 // for(int i=0; i<n; i++){
