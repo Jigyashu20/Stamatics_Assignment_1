@@ -44,11 +44,11 @@ void Print(stack<int> &s){      // prints the vertices in topological order
 }
 
 void topological_sort(graph &gh){
-    vector <bool> visited(gh.adj.size(), false);   // vector to check if node is already visited or not
-    vector <bool> inStack(gh.adj.size(), false);    // vector to check if node is already in recursion stack
+    vector <bool> visited(gh.V, false);   // vector to check if node is already visited or not
+    vector <bool> inStack(gh.V, false);    // vector to check if node is already in recursion stack
     stack <int> st;     // stack to store elements in topologicaal order
     bool flag = false;
-    for(int i=0; i<gh.adj.size(); i++){
+    for(int i=0; i<gh.V; i++){
         if(!visited[i]) {
         flag = rec_sort(gh,i , visited, inStack, st);       //check if there is a topo. order poss or not by checking cycles in it
         if(flag)    break;      // break the loop if graph has one or more cycle
