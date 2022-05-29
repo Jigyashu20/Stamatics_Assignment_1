@@ -61,7 +61,7 @@ void Print(vector<bool> &Ans){
 
 void SAT_2(graph &gh){
     int n = gh.V;
-    vector<int> topological_order, comp(n, -1);  // vectors to store topo_order and component number
+    vector<int> topological_order, comp(n, -1);  // vector to store topo_order
     vector <bool> visited(n, false), ans(n/2, false);  // vectors to track visit of a node and whether to assign true or false to a topping
     for(int i=0; i<n; i++){
         if(!visited[i]){
